@@ -1,0 +1,22 @@
+---
+import LoginCallback from '@/components/login-callback.vue'
+
+const authCode = Astro.url.searchParams.get('code')
+const authState = Astro.url.searchParams.get('state')
+if (!authCode || !authState) {
+  return Astro.redirect('/')
+}
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<LoginCallback client:only="vue" authCode={authCode} authState={authState} />
+	</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "go run . --dir database",
+    "build": "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags \"-s -w\" && upx -9 backend"
+  }
+}

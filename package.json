@@ -1,0 +1,23 @@
+{
+  "name": "greasify",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev --filter=./apps/* --filter=./packages/*",
+    "build": "turbo run --filter=./apps/* build",
+    "typegen": "pnpm --filter=./packages/pocketbase run typegen",
+    "format": "prettier --write \"**/*.{js,ts,tsx,vue,astro}\""
+  },
+  "devDependencies": {
+    "@crashmax/prettier-config": "5.0.1",
+    "@crashmax/tsconfig": "2.1.0",
+    "@types/node": "20.10.5",
+    "nodemon": "3.0.2",
+    "prettier-plugin-astro": "0.12.2",
+    "turbo": "1.11.2"
+  },
+  "dependencies": {
+    "dotenv": "16.3.1"
+  }
+}

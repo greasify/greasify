@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./dist/server/entry.mjs",
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "7.0.1",
+    "@astrojs/vercel": "6.1.0",
+    "@astrojs/vue": "4.0.4",
+    "@greasify/pocketbase": "workspace:*",
+    "@vueuse/core": "10.7.0",
+    "astro": "4.0.6",
+    "pinia": "2.1.7",
+    "vue": "3.3.13"
+  },
+  "devDependencies": {
+    "vite": "5.0.10"
+  }
+}
