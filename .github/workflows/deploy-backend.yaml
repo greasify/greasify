@@ -24,10 +24,10 @@ jobs:
       uses: easingthemes/ssh-deploy@main
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SOURCE: "apps/backend/backend"
+        SOURCE: "apps/backend/build"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
-        SCRIPT_BEFORE: |
+        SCRIPT_AFTER: |
           cd ..
           touch reload

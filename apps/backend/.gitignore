@@ -2,3 +2,4 @@ database/*
 !database/.gitkeep
 backend
 backend.upx
+build
