@@ -32,6 +32,7 @@ func main() {
 	_, err := apis.Serve(app, apis.ServeConfig{
 		HttpAddr:        appIp + ":" + appPort,
 		ShowStartBanner: true,
+		AllowedOrigins:  []string{"https://greasify.vercel.app", "http://localhost:5173"},
 	})
 
 	if err != nil {

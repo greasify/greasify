@@ -1,8 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
-import { defineConfig, loadEnv } from 'vite'
-
-const env = loadEnv('development', process.cwd(), '')
+import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,20 +12,6 @@ export default defineConfig({
     })
 
   ],
-  server: {
-    proxy: {
-      '/api': {
-        target: env.VITE_POCKETBASE_URL,
-        changeOrigin: true,
-        ws: true
-      },
-      '/_/': {
-        target: env.VITE_POCKETBASE_URL,
-        changeOrigin: true,
-        ws: true
-      }
-    }
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

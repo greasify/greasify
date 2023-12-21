@@ -15,7 +15,7 @@ export const usePocketbase = defineStore('pocketbase', () => {
       clear: async () => localStorage.removeItem('pb_auth')
     })
 
-    pb.value = new PocketBase(window.location.origin, store) as TypedPocketBase
+    pb.value = new PocketBase(import.meta.env.VITE_POCKETBASE_URL, store) as TypedPocketBase
     pb.value.authStore.onChange((token) => {
       router.push(token ? '/dashboard' : '/')
     })

@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "turbo dev --filter=./apps/* --filter=./packages/*",
-    "build": "turbo run --filter=./apps/* build",
+    "build": "turbo run build --filter=./apps/*",
+    "build:frontend": "turbo run build --filter=./apps/frontend",
+    "frontend:deploy": "vercel deploy --prod",
     "typegen": "pnpm --filter=./packages/pocketbase run typegen",
     "format": "prettier --write \"**/*.{js,ts,tsx,vue,astro}\""
   },
@@ -16,6 +18,7 @@
     "nodemon": "3.0.2",
     "prettier-plugin-astro": "0.12.2",
     "turbo": "1.11.2",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "vercel": "33.0.1"
   }
 }
