@@ -35,8 +35,7 @@ export type AuthSystemFields<T = never> = {
 
 // Record types for each collection
 
-export type ApplicationsRecord = {
-	banner_url?: string
+export type ApplicationsRecord<Ttags = unknown> = {
 	is_banned?: boolean
 	is_deprecated?: boolean
 	is_private?: boolean
@@ -44,6 +43,7 @@ export type ApplicationsRecord = {
 	latest_version?: string
 	name?: string
 	scripts?: RecordIdString[]
+	tags?: null | Ttags
 }
 
 export type ScriptsRecord = {
@@ -59,7 +59,7 @@ export type UsersRecord = {
 }
 
 // Response types include system fields and match responses from the PocketBase API
-export type ApplicationsResponse<Texpand = unknown> = Required<ApplicationsRecord> & BaseSystemFields<Texpand>
+export type ApplicationsResponse<Ttags = unknown, Texpand = unknown> = Required<ApplicationsRecord<Ttags>> & BaseSystemFields<Texpand>
 export type ScriptsResponse<Texpand = unknown> = Required<ScriptsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
