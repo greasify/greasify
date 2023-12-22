@@ -5,7 +5,6 @@ import { computed, onMounted, ref, watchEffect } from 'vue'
 import type { AuthProviderInfo } from '@greasify/pocketbase'
 
 import { usePocketbase } from '@/stores/use-pocketbase'
-import router from '@/router'
 
 export const useAuth = defineStore('auth', () => {
   const pocketbase = usePocketbase()
@@ -33,7 +32,8 @@ export const useAuth = defineStore('auth', () => {
     if (
       pocketbase.pb.authStore.token ||
       !storageAuthProvider.value ||
-      !isLoading.value
+      !codeQueryParams.value ||
+      !stateQueryParam.value
     ) {
       return
     }
@@ -52,8 +52,8 @@ export const useAuth = defineStore('auth', () => {
           storageAuthProvider.value.codeVerifier,
           window.location.origin
         )
-    } catch {
-      router.push('/')
+    } catch (err) {
+      console.error(err)
     }
   })
 

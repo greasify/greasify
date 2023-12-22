@@ -19,13 +19,11 @@ import type {
 import { useApplicationForm } from '@/stores/applications/use-application-form.js'
 import { useApplications } from '@/stores/applications/use-applications.js'
 import { discrete } from '@/stores/use-discrete.js'
-import { usePocketbase } from '@/stores/use-pocketbase.js'
 
 const props = defineProps<{
-  application?: ApplicationsResponse<string[]>
+  application?: ApplicationsResponse<string[], { scripts: ScriptsResponse[] }>
 }>()
 
-const pocketbase = usePocketbase()
 const applications = useApplications()
 const applicationForm = useApplicationForm()
 const { formRef, formRules, formModel } = storeToRefs(applicationForm)
@@ -38,12 +36,8 @@ onMounted(async () => {
   // @ts-ignore
   formModel.value = props.application
 
-  // if (!props.application.scripts.length) return
-  // applicationScripts.value = await pocketbase.pb.collection('applications').getOne(props.application.id, {
-  //   expand: 'scripts'
-  // })
-
-  // console.log(applicationScripts.value)
+  if (!props.application.scripts.length) return
+  applicationScripts.value = props.application.expand!.scripts
 })
 
 onUnmounted(() => {
@@ -91,7 +85,9 @@ async function handleSubmit() {
     </n-tab-pane>
 
     <n-tab-pane :disabled="applicationScripts.length === 0" name="Scripts">
-      world
+      <div v-for="script in applicationScripts" :key="script.id">
+        <h3>{{ script.version }}</h3>
+      </div>
     </n-tab-pane>
   </n-tabs>
   <n-button @click="handleSubmit" block>

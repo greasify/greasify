@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { NButton, NCard, NGrid, NGridItem, NSpace, NTag } from 'naive-ui'
 import { h } from 'vue'
-import type { ApplicationsResponse } from '@greasify/pocketbase/types'
-
-import { useApplications } from '@/stores/applications/use-applications.js'
+import { useApplications, type Application } from '@/stores/applications/use-applications.js'
 import { discrete } from '@/stores/use-discrete.js'
 import ApplicationModalContent from './application-modal-content.vue'
 
@@ -20,7 +18,7 @@ function createApplication() {
   })
 }
 
-async function deleteApplication(application: ApplicationsResponse) {
+async function deleteApplication(application: Application) {
   discrete.dialog.warning({
     title: 'Confirm',
     content: `Are you sure you want to delete ${application.name}?`,
@@ -32,7 +30,7 @@ async function deleteApplication(application: ApplicationsResponse) {
   })
 }
 
-function editApplication(application: ApplicationsResponse<string[]>) {
+function editApplication(application: Application) {
   discrete.dialog.create({
     title: 'Edit application',
     style: {
@@ -54,6 +52,9 @@ function editApplication(application: ApplicationsResponse<string[]>) {
           <n-tag v-if="app.is_deprecated" type="error">Deprecated</n-tag>
           <n-tag type="info">{{ app.is_private ? 'Private' : 'Public' }}</n-tag>
           <n-tag type="info">{{ app.latest_version }}</n-tag>
+        </n-space>
+        <n-space v-if="app.tags?.length" style="margin-top: 12px;">
+          <n-tag v-for="tag in app.tags" :key="tag">{{ tag }}</n-tag>
         </n-space>
         <n-space style="margin-top: 24px">
           <n-button type="primary" :disabled="app.is_banned" @click="editApplication(app)" ghost block>

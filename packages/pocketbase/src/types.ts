@@ -45,11 +45,9 @@ export type ApplicationsRecord<Ttags = unknown> = {
 	name: string
 	scripts?: RecordIdString[]
 	tags?: null | Ttags
-	user?: RecordIdString
 }
 
 export type ScriptsRecord = {
-	application?: RecordIdString
 	tag?: string
 	userscript_file?: string
 	userscript_meta_file?: string
