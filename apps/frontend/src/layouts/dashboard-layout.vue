@@ -16,33 +16,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-layout
-    style="height: 100vh"
-    has-sider
-  >
+  <n-layout style="height: 100vh" has-sider>
     <n-layout-sider content-style="padding: 24px;">
-      <n-button
-        @click="auth.signOut()"
-        block
-        >Sign Out</n-button
-      >
+      <n-button @click="auth.signOut()" block>Sign Out</n-button>
     </n-layout-sider>
     <n-layout>
       <n-layout-content content-style="padding: 24px;">
-        <div
-          v-if="!isRouterReady"
-          class="loader"
-        >
+        <div v-if="!isRouterReady" class="loader">
           <n-spin size="large" />
         </div>
-        <router-view
-          v-else
-          v-slot="{ Component, route }"
-        >
-          <component
-            :key="route.path"
-            :is="Component"
-          />
+        <router-view v-else v-slot="{ Component, route }">
+          <component :key="route.path" :is="Component" />
         </router-view>
       </n-layout-content>
     </n-layout>

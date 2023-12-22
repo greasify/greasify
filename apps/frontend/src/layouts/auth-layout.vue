@@ -7,10 +7,7 @@ import { NLayout } from 'naive-ui'
     <n-layout has-sider>
       <router-view v-slot="{ Component, route }">
         <div class="content">
-          <component
-            :key="route.path"
-            :is="Component"
-          />
+          <component :key="route.path" :is="Component" />
         </div>
       </router-view>
     </n-layout>

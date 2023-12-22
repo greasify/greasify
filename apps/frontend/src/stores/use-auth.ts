@@ -5,6 +5,7 @@ import { computed, onMounted, ref, watchEffect } from 'vue'
 import type { AuthProviderInfo } from '@greasify/pocketbase'
 
 import { usePocketbase } from '@/stores/use-pocketbase'
+import router from '@/router'
 
 export const useAuth = defineStore('auth', () => {
   const pocketbase = usePocketbase()
@@ -21,20 +22,18 @@ export const useAuth = defineStore('auth', () => {
     }
   )
 
-  const authProvider = ref<AuthProviderInfo | null>(null)
+  const authProviders = ref<AuthProviderInfo[]>([])
   const codeQueryParams = useRouteQuery<string>('code')
   const stateQueryParam = useRouteQuery<string>('state')
-  const isAuthenticated = computed(
+  const isLoading = computed(
     () => codeQueryParams.value && stateQueryParam.value
   )
 
   watchEffect(async () => {
     if (
-      !pocketbase.pb ||
       pocketbase.pb.authStore.token ||
       !storageAuthProvider.value ||
-      !codeQueryParams.value ||
-      !stateQueryParam.value
+      !isLoading.value
     ) {
       return
     }
@@ -53,39 +52,35 @@ export const useAuth = defineStore('auth', () => {
           storageAuthProvider.value.codeVerifier,
           window.location.origin
         )
+    } catch {
+      router.push('/')
+    }
+  })
+
+  onMounted(async () => {
+    try {
+      const authMethods = await pocketbase.pb
+        .collection('users')
+        .listAuthMethods()
+
+      authProviders.value = authMethods.authProviders
     } catch (err) {
       console.error(err)
     }
   })
 
-  onMounted(async () => {
-    if (!pocketbase.pb) return
-
-    const authMethods = await pocketbase.pb
-      .collection('users')
-      .listAuthMethods()
-
-    const githubProvider = authMethods.authProviders[0]
-    if (!githubProvider) {
-      throw new Error('No GitHub provider found')
-    }
-
-    authProvider.value = authMethods.authProviders[0]
-  })
-
-  function signIn() {
-    if (!authProvider.value) return
-    storageAuthProvider.value = authProvider.value
-    window.location.href = authProvider.value.authUrl + window.location.origin
+  function signIn(authProvider: AuthProviderInfo) {
+    storageAuthProvider.value = authProvider
+    window.location.href = authProvider.authUrl + window.location.origin
   }
 
   function signOut() {
-    if (!pocketbase.pb) return
     pocketbase.pb.authStore.clear()
   }
 
   return {
-    isAuthenticated,
+    isLoading,
+    authProviders,
     signIn,
     signOut
   }

@@ -36,18 +36,24 @@ export type AuthSystemFields<T = never> = {
 // Record types for each collection
 
 export type ApplicationsRecord<Ttags = unknown> = {
+	description?: string
 	is_banned?: boolean
 	is_deprecated?: boolean
 	is_private?: boolean
 	is_verified?: boolean
-	latest_version?: string
-	name?: string
+	latest_version: string
+	name: string
 	scripts?: RecordIdString[]
 	tags?: null | Ttags
+	user?: RecordIdString
 }
 
 export type ScriptsRecord = {
+	application?: RecordIdString
 	tag?: string
+	userscript_file?: string
+	userscript_meta_file?: string
+	userscript_update_file?: string
 	version?: string
 }
 

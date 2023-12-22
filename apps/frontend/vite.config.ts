@@ -10,6 +10,7 @@ export default defineConfig({
         defineModel: true
       }
     })
+
   ],
   server: {
     proxy: {

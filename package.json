@@ -9,7 +9,7 @@
     "build:frontend": "turbo run build --filter=./apps/frontend",
     "frontend:deploy": "vercel deploy --prod",
     "typegen": "pnpm --filter=./packages/pocketbase run typegen",
-    "format": "prettier --write \"**/*.{js,ts,tsx,vue,astro}\""
+    "format": "prettier --write \"**/*.{js,ts}\""
   },
   "devDependencies": {
     "@crashmax/prettier-config": "5.0.1",
