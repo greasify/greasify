@@ -6,7 +6,6 @@ import (
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/daos"
 	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 func init() {
@@ -28,23 +27,9 @@ func init() {
 			"minPasswordLength": 8,
 			"onlyEmailDomains": null,
 			"onlyVerified": false,
-			"requireEmail": false
+			"requireEmail": true
 		}`), &options)
 		collection.SetOptions(options)
-
-		// add
-		new_is_admin := &schema.SchemaField{}
-		json.Unmarshal([]byte(`{
-			"system": false,
-			"id": "bpohj6au",
-			"name": "is_admin",
-			"type": "bool",
-			"required": false,
-			"presentable": false,
-			"unique": false,
-			"options": {}
-		}`), new_is_admin)
-		collection.Schema.AddField(new_is_admin)
 
 		return dao.SaveCollection(collection)
 	}, func(db dbx.Builder) error {
@@ -57,9 +42,9 @@ func init() {
 
 		options := map[string]any{}
 		json.Unmarshal([]byte(`{
-			"allowEmailAuth": true,
+			"allowEmailAuth": false,
 			"allowOAuth2Auth": true,
-			"allowUsernameAuth": true,
+			"allowUsernameAuth": false,
 			"exceptEmailDomains": null,
 			"manageRule": null,
 			"minPasswordLength": 8,
@@ -68,9 +53,6 @@ func init() {
 			"requireEmail": false
 		}`), &options)
 		collection.SetOptions(options)
-
-		// remove
-		collection.Schema.RemoveField("bpohj6au")
 
 		return dao.SaveCollection(collection)
 	})

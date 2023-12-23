@@ -2,23 +2,30 @@ import { defineStore } from 'pinia'
 import { onMounted, ref } from 'vue'
 import type {
   ApplicationsResponse,
-  ScriptsResponse
+  FilesResponse
 } from '@greasify/pocketbase/types'
 
+import { useAuth } from '../use-auth.js'
 import { usePocketbase } from '../use-pocketbase.js'
-import { useUser } from '../use-user.js'
 
-export type Application = ApplicationsResponse<string[], { scripts: ScriptsResponse[] }>
+export type Application = ApplicationsResponse<
+  string[],
+  { files: FilesResponse[] }
+>
 
 export const useApplications = defineStore('applications', () => {
-  const user = useUser()
+  const auth = useAuth()
   const pocketbase = usePocketbase()
   const applications = ref<Application[]>([])
 
   onMounted(async () => {
     applications.value = await pocketbase.pb
       .collection('applications')
-      .getFullList({ expand: 'scripts' })
+      .getFullList({
+        filter: pocketbase.pb.filter('{user} = {:user}', {
+          user: auth.getUserId()
+        })
+      })
   })
 
   async function deleteApplication(applicationId: string) {
@@ -27,10 +34,6 @@ export const useApplications = defineStore('applications', () => {
       .delete(applicationId)
 
     if (isDeleted) {
-      await pocketbase.pb.collection('users').update(user.userId, {
-        'applications-': applicationId
-      })
-
       applications.value = applications.value.filter(
         (app) => app.id !== applicationId
       )
@@ -40,11 +43,7 @@ export const useApplications = defineStore('applications', () => {
   async function createApplication(data: Partial<Application>) {
     const newApplication = await pocketbase.pb
       .collection('applications')
-      .create<Application>(data)
-
-    await pocketbase.pb.collection('users').update(user.userId, {
-      'applications+': newApplication.id
-    })
+      .create<Application>({ ...data, user: auth.getUserId() })
 
     applications.value.push(newApplication)
   }

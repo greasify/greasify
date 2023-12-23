@@ -13,7 +13,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type {
   ApplicationsResponse,
-  ScriptsResponse
+  FilesResponse
 } from '@greasify/pocketbase/types'
 
 import { useApplicationForm } from '@/stores/applications/use-application-form.js'
@@ -21,23 +21,20 @@ import { useApplications } from '@/stores/applications/use-applications.js'
 import { discrete } from '@/stores/use-discrete.js'
 
 const props = defineProps<{
-  application?: ApplicationsResponse<string[], { scripts: ScriptsResponse[] }>
+  application?: ApplicationsResponse<string[], { files: FilesResponse[] }>
 }>()
 
 const applications = useApplications()
 const applicationForm = useApplicationForm()
 const { formRef, formRules, formModel } = storeToRefs(applicationForm)
 
-const applicationScripts = ref<ScriptsResponse[]>([])
+const applicationScripts = ref<FilesResponse[]>([])
 const isEdit = computed(() => Boolean(props.application))
 
 onMounted(async () => {
   if (!isEdit.value || !props.application) return
   // @ts-ignore
   formModel.value = props.application
-
-  if (!props.application.scripts.length) return
-  applicationScripts.value = props.application.expand!.scripts
 })
 
 onUnmounted(() => {

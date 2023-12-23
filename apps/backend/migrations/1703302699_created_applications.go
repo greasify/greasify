@@ -12,19 +12,19 @@ import (
 func init() {
 	m.Register(func(db dbx.Builder) error {
 		jsonData := `{
-			"id": "kt46al122joiha5",
-			"created": "2023-12-20 03:05:04.078Z",
-			"updated": "2023-12-20 03:05:04.078Z",
+			"id": "u8cie3jpotr0iv3",
+			"created": "2023-12-23 03:38:19.822Z",
+			"updated": "2023-12-23 03:38:19.822Z",
 			"name": "applications",
 			"type": "base",
 			"system": false,
 			"schema": [
 				{
 					"system": false,
-					"id": "k45g68l4",
+					"id": "sd0pft8j",
 					"name": "name",
 					"type": "text",
-					"required": false,
+					"required": true,
 					"presentable": false,
 					"unique": false,
 					"options": {
@@ -35,8 +35,8 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "l4y9vbs9",
-					"name": "version",
+					"id": "m0qrqwu6",
+					"name": "description",
 					"type": "text",
 					"required": false,
 					"presentable": false,
@@ -49,20 +49,19 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "uylqzx4p",
-					"name": "banner_url",
-					"type": "url",
+					"id": "tb4nambr",
+					"name": "tags",
+					"type": "json",
 					"required": false,
 					"presentable": false,
 					"unique": false,
 					"options": {
-						"exceptDomains": null,
-						"onlyDomains": null
+						"maxSize": 5000
 					}
 				},
 				{
 					"system": false,
-					"id": "1gqi1qcs",
+					"id": "9gfkafov",
 					"name": "is_private",
 					"type": "bool",
 					"required": false,
@@ -72,7 +71,7 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "tzwa464d",
+					"id": "eiege6cx",
 					"name": "is_banned",
 					"type": "bool",
 					"required": false,
@@ -82,7 +81,7 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "g5gbw8kl",
+					"id": "sjgon0bn",
 					"name": "is_verified",
 					"type": "bool",
 					"required": false,
@@ -92,21 +91,39 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "snulkzdt",
+					"id": "tjlcf80a",
 					"name": "is_deprecated",
 					"type": "bool",
 					"required": false,
 					"presentable": false,
 					"unique": false,
 					"options": {}
+				},
+				{
+					"system": false,
+					"id": "f9an1bax",
+					"name": "user",
+					"type": "relation",
+					"required": false,
+					"presentable": false,
+					"unique": false,
+					"options": {
+						"collectionId": "_pb_users_auth_",
+						"cascadeDelete": true,
+						"minSelect": null,
+						"maxSelect": 1,
+						"displayFields": null
+					}
 				}
 			],
-			"indexes": [],
-			"listRule": null,
-			"viewRule": null,
-			"createRule": null,
-			"updateRule": null,
-			"deleteRule": null,
+			"indexes": [
+				"CREATE UNIQUE INDEX ` + "`" + `idx_2368Asp` + "`" + ` ON ` + "`" + `applications` + "`" + ` (` + "`" + `name` + "`" + `)"
+			],
+			"listRule": "@request.auth.id != null",
+			"viewRule": "@request.auth.id != null",
+			"createRule": "@request.auth.id != null",
+			"updateRule": "user = @request.auth.id",
+			"deleteRule": "user = @request.auth.id",
 			"options": {}
 		}`
 
@@ -119,7 +136,7 @@ func init() {
 	}, func(db dbx.Builder) error {
 		dao := daos.New(db);
 
-		collection, err := dao.FindCollectionByNameOrId("kt46al122joiha5")
+		collection, err := dao.FindCollectionByNameOrId("u8cie3jpotr0iv3")
 		if err != nil {
 			return err
 		}

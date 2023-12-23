@@ -51,7 +51,6 @@ function editApplication(application: Application) {
           <n-tag v-if="app.is_verified" type="success">Verified</n-tag>
           <n-tag v-if="app.is_deprecated" type="error">Deprecated</n-tag>
           <n-tag type="info">{{ app.is_private ? 'Private' : 'Public' }}</n-tag>
-          <n-tag type="info">{{ app.latest_version }}</n-tag>
         </n-space>
         <n-space v-if="app.tags?.length" style="margin-top: 12px;">
           <n-tag v-for="tag in app.tags" :key="tag">{{ tag }}</n-tag>

@@ -7,7 +7,7 @@ import type { RecordService } from 'pocketbase'
 
 export enum Collections {
 	Applications = "applications",
-	Scripts = "scripts",
+	Files = "files",
 	Users = "users",
 }
 
@@ -41,43 +41,42 @@ export type ApplicationsRecord<Ttags = unknown> = {
 	is_deprecated?: boolean
 	is_private?: boolean
 	is_verified?: boolean
-	latest_version: string
 	name: string
-	scripts?: RecordIdString[]
 	tags?: null | Ttags
+	user: RecordIdString
 }
 
-export type ScriptsRecord = {
-	tag?: string
-	userscript_file?: string
-	userscript_meta_file?: string
-	userscript_update_file?: string
-	version?: string
+export type FilesRecord = {
+	application: RecordIdString
+	file: string
+	meta: string
+	tag: string
+	update: string
+	user: RecordIdString
+	version: string
 }
 
 export type UsersRecord = {
-	applications?: RecordIdString[]
 	avatar?: string
-	is_admin?: boolean
 	name?: string
 }
 
 // Response types include system fields and match responses from the PocketBase API
 export type ApplicationsResponse<Ttags = unknown, Texpand = unknown> = Required<ApplicationsRecord<Ttags>> & BaseSystemFields<Texpand>
-export type ScriptsResponse<Texpand = unknown> = Required<ScriptsRecord> & BaseSystemFields<Texpand>
+export type FilesResponse<Texpand = unknown> = Required<FilesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
 export type CollectionRecords = {
 	applications: ApplicationsRecord
-	scripts: ScriptsRecord
+	files: FilesRecord
 	users: UsersRecord
 }
 
 export type CollectionResponses = {
 	applications: ApplicationsResponse
-	scripts: ScriptsResponse
+	files: FilesResponse
 	users: UsersResponse
 }
 
@@ -86,6 +85,6 @@ export type CollectionResponses = {
 
 export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'applications'): RecordService<ApplicationsResponse>
-	collection(idOrName: 'scripts'): RecordService<ScriptsResponse>
+	collection(idOrName: 'files'): RecordService<FilesResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }

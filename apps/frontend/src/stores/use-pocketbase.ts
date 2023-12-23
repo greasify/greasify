@@ -6,11 +6,11 @@ import type { TypedPocketBase } from '@greasify/pocketbase/types'
 
 import { discrete } from './use-discrete.js'
 
-export const usePocketbase = defineStore('pocketbase', () => {
-  const url = import.meta.env.DEV
+const POCKETBASE_URL = import.meta.env.DEV
     ? window.location.origin
     : import.meta.env.VITE_POCKETBASE_URL
 
+export const usePocketbase = defineStore('pocketbase', () => {
   const store = new AsyncAuthStore({
     save: async (serialized) => localStorage.setItem('pb_auth', serialized),
     initial: localStorage.getItem('pb_auth')!,
@@ -18,7 +18,7 @@ export const usePocketbase = defineStore('pocketbase', () => {
   })
 
   const router = useRouter()
-  const pb = ref<TypedPocketBase>(new PocketBase(url, store))
+  const pb = ref<TypedPocketBase>(new PocketBase(POCKETBASE_URL, store))
 
   onMounted(() => {
     pb.value.authStore.onChange((token) => {

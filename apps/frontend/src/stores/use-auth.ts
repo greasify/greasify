@@ -1,61 +1,30 @@
-import { useStorage } from '@vueuse/core'
-import { useRouteQuery } from '@vueuse/router'
+import * as vueuse from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { computed, onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { AuthProviderInfo } from '@greasify/pocketbase'
+import type { UsersResponse } from '@greasify/pocketbase/types'
 
-import { usePocketbase } from '@/stores/use-pocketbase'
+import { usePocketbase } from '@/stores/use-pocketbase.js'
+
+const jsonSerializer = {
+  read: (value: string) => (value ? JSON.parse(value) : null),
+  write: (value: unknown) => JSON.stringify(value)
+}
 
 export const useAuth = defineStore('auth', () => {
   const pocketbase = usePocketbase()
 
-  const storageAuthProvider = useStorage<AuthProviderInfo | null>(
+  const authProviders = ref<AuthProviderInfo[]>([])
+  const activeAuthProvider = vueuse.useLocalStorage<AuthProviderInfo | null>(
     'auth-provider',
     null,
-    localStorage,
-    {
-      serializer: {
-        read: (v) => (v ? JSON.parse(v) : null),
-        write: (v) => JSON.stringify(v)
-      }
-    }
+    { serializer: jsonSerializer }
   )
 
-  const authProviders = ref<AuthProviderInfo[]>([])
-  const codeQueryParams = useRouteQuery<string>('code')
-  const stateQueryParam = useRouteQuery<string>('state')
-  const isLoading = computed(
-    () => codeQueryParams.value && stateQueryParam.value
-  )
-
-  watchEffect(async () => {
-    if (
-      pocketbase.pb.authStore.token ||
-      !storageAuthProvider.value ||
-      !codeQueryParams.value ||
-      !stateQueryParam.value
-    ) {
-      return
-    }
-
-    if (storageAuthProvider.value.state !== stateQueryParam.value) {
-      window.location.href = '/'
-      return
-    }
-
-    try {
-      await pocketbase.pb
-        .collection('users')
-        .authWithOAuth2Code(
-          storageAuthProvider.value.name,
-          codeQueryParams.value,
-          storageAuthProvider.value.codeVerifier,
-          window.location.origin
-        )
-    } catch (err) {
-      console.error(err)
-    }
-  })
+  const authData = vueuse.useLocalStorage<{
+    token: string
+    model: UsersResponse
+  } | null>('pb_auth', null, { serializer: jsonSerializer })
 
   onMounted(async () => {
     try {
@@ -70,18 +39,26 @@ export const useAuth = defineStore('auth', () => {
   })
 
   function signIn(authProvider: AuthProviderInfo) {
-    storageAuthProvider.value = authProvider
-    window.location.href = authProvider.authUrl + window.location.origin
+    activeAuthProvider.value = authProvider
+    window.location.replace(
+      authProvider.authUrl + window.location.origin + '/auth/callback'
+    )
   }
 
   function signOut() {
     pocketbase.pb.authStore.clear()
   }
 
+  function getUserId() {
+    return authData.value!.model.id
+  }
+
   return {
-    isLoading,
+    authData,
     authProviders,
+    activeAuthProvider,
     signIn,
-    signOut
+    signOut,
+    getUserId
   }
 })
