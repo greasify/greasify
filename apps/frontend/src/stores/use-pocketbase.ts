@@ -7,8 +7,8 @@ import type { TypedPocketBase } from '@greasify/pocketbase/types'
 import { discrete } from './use-discrete.js'
 
 const POCKETBASE_URL = import.meta.env.DEV
-    ? window.location.origin
-    : import.meta.env.VITE_POCKETBASE_URL
+  ? window.location.origin
+  : import.meta.env.VITE_POCKETBASE_URL
 
 export const usePocketbase = defineStore('pocketbase', () => {
   const store = new AsyncAuthStore({

@@ -21,11 +21,7 @@ export const useApplications = defineStore('applications', () => {
   onMounted(async () => {
     applications.value = await pocketbase.pb
       .collection('applications')
-      .getFullList({
-        filter: pocketbase.pb.filter('{user} = {:user}', {
-          user: auth.getUserId()
-        })
-      })
+      .getFullList()
   })
 
   async function deleteApplication(applicationId: string) {
