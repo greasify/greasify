@@ -15,6 +15,6 @@
     "pocketbase-typegen": "1.2.1"
   },
   "dependencies": {
-    "pocketbase": "0.20.1"
+    "pocketbase": "0.20.3"
   }
 }
