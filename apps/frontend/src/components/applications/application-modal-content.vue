@@ -20,6 +20,8 @@ import { useApplicationForm } from '@/stores/applications/use-application-form.j
 import { useApplications } from '@/stores/applications/use-applications.js'
 import { discrete } from '@/stores/use-discrete.js'
 
+import ApplicationReadmeEditor from './application-readme-editor.vue'
+
 const props = defineProps<{
   application?: ApplicationsResponse<string[], { files: FilesResponse[] }>
 }>()
@@ -28,10 +30,11 @@ const applications = useApplications()
 const applicationForm = useApplicationForm()
 const { formRef, formRules, formModel } = storeToRefs(applicationForm)
 
+const applicationReadme = ref(props.application?.readme ?? '')
 const applicationScripts = ref<FilesResponse[]>([])
 const isEdit = computed(() => Boolean(props.application))
 
-onMounted(async () => {
+onMounted(() => {
   if (!isEdit.value || !props.application) return
   // @ts-ignore
   formModel.value = props.application
@@ -43,8 +46,9 @@ onUnmounted(() => {
 
 async function handleSubmit() {
   try {
-    await formRef.value!.validate()
+    await formRef.value?.validate()
 
+    formModel.value.readme = applicationReadme.value
     if (isEdit.value) {
       await applications.updateApplication(formModel.value)
     } else {
@@ -79,6 +83,13 @@ async function handleSubmit() {
           <n-switch v-model:value="formModel.is_private" />
         </n-form-item>
       </n-form>
+    </n-tab-pane>
+
+    <n-tab-pane :disabled="!isEdit" name="Readme">
+      <application-readme-editor
+        v-model:content="applicationReadme"
+        @update:content="applicationReadme = $event"
+      />
     </n-tab-pane>
 
     <n-tab-pane :disabled="applicationScripts.length === 0" name="Scripts">

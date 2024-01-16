@@ -5,7 +5,7 @@ import type { FormInst, FormRules } from 'naive-ui'
 const INITIAL_FORM_MODEL = {
   name: '',
   description: '',
-  latest_version: '0.0.0',
+  readme: '',
   tags: [] as string[],
   is_private: false
 }

@@ -42,16 +42,15 @@ export type ApplicationsRecord<Ttags = unknown> = {
 	is_private?: boolean
 	is_verified?: boolean
 	name: string
+	readme?: HTMLString
 	tags?: null | Ttags
 	user: RecordIdString
 }
 
 export type FilesRecord = {
 	application: RecordIdString
-	file: string
-	meta: string
+	script: string
 	tag: string
-	update: string
 	user: RecordIdString
 	version: string
 }
