@@ -6,15 +6,14 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('@/layouts/auth-layout.vue'),
+      name: 'auth',
       children: [
         {
           path: '/',
-          name: 'auth',
           component: () => import('@/pages/auth-page.vue')
         },
         {
           path: '/auth/callback',
-          name: 'auth-callback',
           component: () => import('@/pages/auth-callback-page.vue')
         }
       ]
@@ -22,10 +21,11 @@ const router = createRouter({
     {
       path: '/dashboard',
       component: () => import('@/layouts/dashboard-layout.vue'),
+      name: 'dashboard',
+      meta: { requiresAuth: true },
       children: [
         {
           path: '/dashboard',
-          name: 'dashboard',
           component: () => import('@/pages/dashboard-page.vue')
         }
       ]
@@ -33,12 +33,12 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name !== 'auth' && !localStorage.getItem('pb_auth')) {
-//     next({ name: 'auth' })
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.meta?.requiresAuth && !localStorage.getItem('pb_auth')) {
+    return next({ name: 'auth' })
+  }
+
+  next()
+})
 
 export default router

@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { NSpin } from 'naive-ui'
-import { watchEffect } from 'vue'
+import { onMounted } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { usePocketbase } from '@/stores/use-pocketbase'
 import { useAuth } from '@/stores/use-auth.js'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const auth = useAuth()
 const pocketbase = usePocketbase()
 
 const code = useRouteQuery<string>('code')
-const state = useRouteQuery<string>('state')
+// const state = useRouteQuery<string>('state')
 
-watchEffect(async () => {
-  if (
-    pocketbase.pb.authStore.token ||
-    !auth.activeAuthProvider ||
-    !code.value ||
-    !state.value
-  ) {
-    return
-  }
+async function authWithProvider() {
+  if (!auth.activeAuthProvider || !code.value) return
 
   try {
     await pocketbase.pb
@@ -35,7 +26,9 @@ watchEffect(async () => {
   } catch (err) {
     console.error(err)
   }
-})
+}
+
+onMounted(() => authWithProvider())
 </script>
 
 <template>
