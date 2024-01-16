@@ -21,6 +21,8 @@ import { useApplications } from '@/stores/applications/use-applications.js'
 import { discrete } from '@/stores/use-discrete.js'
 
 import ApplicationReadmeEditor from './application-readme-editor.vue'
+import ApplicationUploadForm from './application-upload-form.vue'
+import { usePocketbase } from '@/stores/use-pocketbase.js'
 
 const props = defineProps<{
   application?: ApplicationsResponse<string[], { files: FilesResponse[] }>
@@ -30,11 +32,11 @@ const applications = useApplications()
 const applicationForm = useApplicationForm()
 const { formRef, formRules, formModel } = storeToRefs(applicationForm)
 
-const applicationReadme = ref(props.application?.readme ?? '')
 const applicationScripts = ref<FilesResponse[]>([])
+const applicationReadme = ref(props.application?.readme ?? '')
 const isEdit = computed(() => Boolean(props.application))
 
-onMounted(() => {
+onMounted(async () => {
   if (!isEdit.value || !props.application) return
   // @ts-ignore
   formModel.value = props.application
@@ -83,6 +85,10 @@ async function handleSubmit() {
           <n-switch v-model:value="formModel.is_private" />
         </n-form-item>
       </n-form>
+
+      <n-button @click="handleSubmit" block>
+        {{ isEdit ? 'Save' : 'Create' }}
+      </n-button>
     </n-tab-pane>
 
     <n-tab-pane :disabled="!isEdit" name="Readme">
@@ -90,15 +96,18 @@ async function handleSubmit() {
         v-model:content="applicationReadme"
         @update:content="applicationReadme = $event"
       />
+
+      <n-button @click="handleSubmit" block>
+        {{ isEdit ? 'Save' : 'Create' }}
+      </n-button>
     </n-tab-pane>
 
-    <n-tab-pane :disabled="applicationScripts.length === 0" name="Scripts">
-      <div v-for="script in applicationScripts" :key="script.id">
-        <h3>{{ script.version }}</h3>
-      </div>
+    <n-tab-pane :disabled="!isEdit" name="Scripts">
+      <application-upload-form
+        v-if="application"
+        :application-id="application.id"
+        :user-id="application.user"
+      />
     </n-tab-pane>
   </n-tabs>
-  <n-button @click="handleSubmit" block>
-    {{ isEdit ? 'Save' : 'Create' }}
-  </n-button>
 </template>
