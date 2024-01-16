@@ -31,10 +31,10 @@ export const usePocketbase = defineStore('pocketbase', () => {
     }
 
     pb.value.afterSend = (response, data) => {
-      if (response.status !== 200) {
-        discrete.loadingBar.error()
-      } else {
+      if (response.status >= 200 && response.status < 300) {
         discrete.loadingBar.finish()
+      } else {
+        discrete.loadingBar.error()
       }
 
       return data
