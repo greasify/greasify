@@ -3,7 +3,6 @@ import { ref, computed, h } from 'vue'
 import { NUpload, NInput, NButton, NDataTable, NTag, NText } from 'naive-ui'
 import type { UploadInst, UploadFileInfo, DataTableColumns } from 'naive-ui'
 import { discrete } from '@/stores/use-discrete.js'
-import { usePocketbase } from '@/stores/use-pocketbase.js';
 import { useApplicationFiles } from '@/stores/applications/use-application-files.js'
 
 const props = defineProps<{
@@ -16,7 +15,6 @@ const tagInput = ref('')
 const uploadRef = ref<UploadInst | null>(null)
 const selectedFile = ref<UploadFileInfo[]>([])
 
-const pocketbase = usePocketbase()
 const { files, createFile, deleteFile } = useApplicationFiles()
 
 const isFormDisabled = computed(() => {

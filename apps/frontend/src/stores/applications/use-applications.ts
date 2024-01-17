@@ -5,8 +5,8 @@ import type {
   FilesResponse
 } from '@greasify/pocketbase/types'
 
-import { useAuth } from '../use-auth.js'
 import { usePocketbase } from '../use-pocketbase.js'
+import { useUser } from '../use-user.js'
 
 export type Application = ApplicationsResponse<
   string[],
@@ -14,7 +14,7 @@ export type Application = ApplicationsResponse<
 >
 
 export const useApplications = defineStore('applications', () => {
-  const auth = useAuth()
+  const user = useUser()
   const pocketbase = usePocketbase()
   const applications = ref<Application[]>([])
 
@@ -39,7 +39,7 @@ export const useApplications = defineStore('applications', () => {
   async function createApplication(data: Partial<Application>) {
     const newApplication = await pocketbase.pb
       .collection('applications')
-      .create<Application>({ ...data, user: auth.getUserId() })
+      .create<Application>({ ...data, user: user.getUserId() })
 
     applications.value.push(newApplication)
   }

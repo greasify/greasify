@@ -4,12 +4,13 @@ import { onMounted } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { usePocketbase } from '@/stores/use-pocketbase'
 import { useAuth } from '@/stores/use-auth.js'
+import { useRouter } from 'vue-router'
 
 const auth = useAuth()
 const pocketbase = usePocketbase()
+const router = useRouter()
 
 const code = useRouteQuery<string>('code')
-// const state = useRouteQuery<string>('state')
 
 async function authWithProvider() {
   if (!auth.activeAuthProvider || !code.value) return
@@ -23,6 +24,8 @@ async function authWithProvider() {
         auth.activeAuthProvider.codeVerifier,
         window.location.origin + '/auth/callback'
       )
+
+    router.push({ name: 'dashboard' })
   } catch (err) {
     console.error(err)
   }

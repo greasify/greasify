@@ -22,7 +22,6 @@ import { discrete } from '@/stores/use-discrete.js'
 
 import ApplicationReadmeEditor from './application-readme-editor.vue'
 import ApplicationUploadForm from './application-upload-form.vue'
-import { usePocketbase } from '@/stores/use-pocketbase.js'
 
 const props = defineProps<{
   application?: ApplicationsResponse<string[], { files: FilesResponse[] }>
@@ -32,7 +31,6 @@ const applications = useApplications()
 const applicationForm = useApplicationForm()
 const { formRef, formRules, formModel } = storeToRefs(applicationForm)
 
-const applicationScripts = ref<FilesResponse[]>([])
 const applicationReadme = ref(props.application?.readme ?? '')
 const isEdit = computed(() => Boolean(props.application))
 

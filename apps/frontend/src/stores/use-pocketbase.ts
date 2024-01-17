@@ -1,30 +1,31 @@
 import PocketBase, { AsyncAuthStore } from '@greasify/pocketbase'
 import { defineStore } from 'pinia'
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import type { TypedPocketBase } from '@greasify/pocketbase/types'
 
 import { discrete } from './use-discrete.js'
+import { useUser } from './use-user.js'
+import { jsonSerializer } from '@/helpers/json-serializer.js'
 
 const POCKETBASE_URL = import.meta.env.DEV
   ? window.location.origin
   : import.meta.env.VITE_POCKETBASE_URL
 
 export const usePocketbase = defineStore('pocketbase', () => {
+  const user = useUser()
+
   const store = new AsyncAuthStore({
-    save: async (serialized) => localStorage.setItem('pb_auth', serialized),
-    initial: localStorage.getItem('pb_auth')!,
-    clear: async () => localStorage.removeItem('pb_auth')
+    save: async (serialized) => user.authData = jsonSerializer.read(serialized),
+    initial: jsonSerializer.write(user.authData),
+    clear: async () => new Promise((resolve) => {
+      user.authData = null
+      resolve()
+    })
   })
 
-  const router = useRouter()
   const pb = ref<TypedPocketBase>(new PocketBase(POCKETBASE_URL, store))
 
   onMounted(() => {
-    pb.value.authStore.onChange((token) => {
-      router.push(token ? '/dashboard' : '/')
-    })
-
     pb.value.beforeSend = (url, options) => {
       discrete.loadingBar.start()
       return { url, options }
